@@ -148,11 +148,3 @@ http://localhost:8501
 
 ---
 
-#  Futuro trabajo
-
-* Mejora de modelos (deep learning, tuning)
-* Deploy en la nube
-* Integración completa backend-frontend
-* Interpretabilidad del modelo (SHAP, LIME)
-
----
