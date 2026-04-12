@@ -5,22 +5,18 @@ import base64
 from pathlib import Path
 import os
 
-# ─── Configuración de página ───────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Snoopy CardioCheck 🐾",
+    page_title="Snoopy CardioCheck",
     page_icon="🐾",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
 
-
-# ─── Helper: imagen a base64 ──────────────────────────────────────────────────
 def img_to_b64(path: str) -> str:
     try:
         return base64.b64encode(Path(path).read_bytes()).decode()
     except Exception:
         return ""
-
 
 _DIR        = os.path.dirname(os.path.abspath(__file__))
 IMG_DOCTOR  = img_to_b64(os.path.join(_DIR, "images/snoopy_doctor.png"))
@@ -28,8 +24,6 @@ IMG_HAPPY   = img_to_b64(os.path.join(_DIR, "images/snoopy_happy.jpeg"))
 IMG_SAD     = img_to_b64(os.path.join(_DIR, "images/snoopy_sad.jpeg"))
 IMG_WORRIED = img_to_b64(os.path.join(_DIR, "images/snoopy_worried.jpeg"))
 
-
-# ─── CSS global ───────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&family=Patrick+Hand&display=swap');
@@ -147,28 +141,45 @@ st.markdown("""
   .fsec {
     background: white; border-radius: 22px;
     border: 3px solid var(--brown); box-shadow: 5px 5px 0 var(--shadow);
-    padding: 1.4rem 1.6rem 1.6rem 1.6rem; margin-bottom: 1.5rem;
+    padding: 0.8rem 1.6rem 1.2rem 1.6rem; margin-bottom: 1.5rem;  /* ← padding reducido */
   }
   .fsec-title {
     font-family: 'Baloo 2', cursive !important;
     font-weight: 800; font-size: 1.4rem !important; color: var(--brown);
-    margin-bottom: 1rem; padding-bottom: 0.4rem;
+    margin-bottom: 0.6rem; padding-bottom: 0.3rem;
     border-bottom: 3px dashed var(--beige);
   }
+
+  /* ─── vtag más grande y legible ─── */
   .vtag {
     display: inline-block; background: var(--beige); color: var(--brown);
     border: 1.5px solid var(--warm); border-radius: 8px;
-    padding: 1px 9px; font-family: 'Courier New', monospace;
-    font-size: 0.78rem !important; font-weight: 700; margin-bottom: 4px;
+    padding: 3px 12px;
+    font-family: 'Patrick Hand', cursive;        /* ← fuente amigable */
+    font-size: 1rem !important;                  /* ← más grande */
+    font-weight: 700; margin-bottom: 4px;
+  }
+
+  /* ─── BMI calculado ─── */
+  /* BMI - quitar apariencia de deshabilitado */
+  input[disabled] {
+      opacity: 1 !important;
+      color: white !important;
+      -webkit-text-fill-color: white !important;
+      cursor: default !important;
+  }
+  /* Ocultar los botones + y - del BMI específicamente */
+  div[data-testid="stNumberInput"]:has(input[disabled]) button {
+      display: none !important;
   }
 
   /* ─── Labels grandes ─── */
   label, .stSlider label, .stNumberInput label,
   .stCheckbox label, .stSelectbox label, .stRadio label, .stSelectSlider label {
     font-family: 'Patrick Hand', cursive !important;
-    font-size: 1.1rem !important; color: var(--text) !important; font-weight: 600 !important;
+    font-size: 1.15rem !important; color: var(--text) !important; font-weight: 600 !important;
   }
-  .stCheckbox label { font-size: 1.05rem !important; }
+  .stCheckbox label { font-size: 1.1rem !important; }
 
   /* ─── Tabs ─── */
   .stTabs [data-baseweb="tab-list"] { gap: 6px; background: transparent; flex-wrap: wrap; }
@@ -176,7 +187,8 @@ st.markdown("""
     background: white; border-radius: 14px 14px 0 0 !important;
     border: 2px solid var(--brown) !important; border-bottom: none !important;
     font-family: 'Baloo 2', cursive !important; font-weight: 700 !important;
-    font-size: 1rem !important; color: var(--brown) !important; padding: 6px 18px !important;
+    font-size: 1.25rem !important; color: var(--brown) !important; 
+    padding: 12px 28px !important;  /* ← antes era 6px 18px */
   }
   .stTabs [aria-selected="true"] { background: var(--brown) !important; color: white !important; }
   .stTabs [data-baseweb="tab-panel"] {
@@ -201,20 +213,46 @@ st.markdown("""
     transform: translate(2px,2px) !important; box-shadow: 2px 2px 0 var(--warm) !important;
   }
 
-  /* ─── Paw divider ─── */
-  .paw { text-align: center; font-size: 1.5rem; color: var(--warm);
-    margin: 0.4rem 0 1.2rem 0; letter-spacing: 8px; }
-
-  /* ─── Info ─── */
   .stAlert { border-radius: 14px !important; border: 2px solid var(--warm) !important;
     font-size: 1rem !important; }
 
-  /* Footer */
   footer { visibility: hidden; }
   .snp-footer {
     text-align: center; color: #a08060; font-size: 1rem;
     margin-top: 2rem; padding-top: 1rem;
     border-top: 2px dashed var(--beige);
+  }
+            /* ─── Radio buttons legibles ─── */
+  div[data-testid="stRadio"] label {
+    color: var(--text) !important;
+    font-size: 1.1rem !important;
+  }
+  div[data-testid="stRadio"] label span {
+    color: var(--text) !important;
+  }
+  /* Círculo seleccionado visible */
+  div[data-testid="stRadio"] [data-testid="stMarkdownContainer"] p {
+    color: var(--text) !important;
+  }
+
+  /* ─── st.info legible ─── */
+  div[data-testid="stAlert"] {
+    background-color: #edf6fc !important;
+    border: 2px solid var(--skydk) !important;
+    border-radius: 14px !important;
+  }
+  div[data-testid="stAlert"] p,
+  div[data-testid="stAlert"] span,
+  div[data-testid="stAlert"] div {
+    color: #1a5a7a !important;
+    font-size: 1rem !important;
+  }
+  div[data-testid="stAlert"] svg {
+    color: var(--skydk) !important;
+    fill: var(--skydk) !important;
+  }
+  div[data-testid="stSliderTickBar"] {
+    display: none !important;
   }
 </style>
 """, unsafe_allow_html=True)
@@ -230,42 +268,38 @@ if "probability" not in st.session_state:
 # ─── Header ───────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="snoopy-header">
-  <div class="snoopy-title"> Snoopy CardioCheck</div>
-  <div class="snoopy-subtitle">¡Snoopy cuida tu corazón! · Ingresa tus datos y descubre tu riesgo </div>
+  <div class="snoopy-title">Snoopy CardioCheck</div>
+  <div class="snoopy-subtitle">¡Snoopy cuida tu corazón! · Ingresa tus datos y descubre tu riesgo</div>
 </div>
 """, unsafe_allow_html=True)
-
 
 
 # ─── Layout ───────────────────────────────────────────────────────────────────
 col_char, col_form = st.columns([1, 2.6], gap="large")
 
-# ══════════════════════════════════════════════════════
-# SNOOPY
-# ══════════════════════════════════════════════════════
 with col_char:
     result = st.session_state.prediction_result
 
     if result is None:
         img_b64   = IMG_DOCTOR
         mood_cls  = "mood-waiting"
-        mood_txt  = "¡Hola! Soy el<br>Dr. Snoopy 🩺"
+        mood_txt  = "¡Hola! Soy el<br>Dr. Snoopy"
         bub_cls   = "bubble bubble-waiting"
-        bub_body  = "📋 Completa el formulario y presiona <b>¡Predecir!</b> para conocer tu riesgo cardíaco."
+        bub_body  = "Completa el formulario y presiona <b>¡Predecir!</b> para conocer tu riesgo cardíaco."
     elif result == "low":
         img_b64  = IMG_HAPPY
         mood_cls = "mood-happy"
-        mood_txt = "¡Todo bien!<br>¡Sigue así! 🎉"
+        mood_txt = "¡Todo bien!<br>¡Sigue así!"
         bub_cls  = "bubble bubble-happy"
         prob_pct = round(st.session_state.probability * 100, 1)
-        bub_body = f"✅ <b>Bajo riesgo</b> de ataque cardíaco<br><br>Probabilidad estimada: <b>{prob_pct}%</b><br><br>¡Snoopy está muy orgulloso de ti! 🐾💪"
+        bub_body = f"<b>Bajo riesgo</b> de ataque cardíaco<br><br>Probabilidad estimada: <b>{prob_pct}%</b><br><br>¡Snoopy está muy orgulloso de ti!"
     else:
         img_b64  = IMG_WORRIED
         mood_cls = "mood-worried"
-        mood_txt = "¡Atención!<br>Consulta a tu médico 🏥"
+        mood_txt = "¡Atención!<br>Consulta a tu médico"
         bub_cls  = "bubble bubble-worried"
         prob_pct = round(st.session_state.probability * 100, 1)
-        bub_body = f"⚠️ <b>Alto riesgo</b> de ataque cardíaco<br><br>Probabilidad estimada: <b>{prob_pct}%</b><br><br>Snoopy te pide que consultes a un especialista cuanto antes."
+        bub_body = f"<b>Alto riesgo</b> de ataque cardíaco<br><br>Probabilidad estimada: <b>{prob_pct}%</b><br><br>Snoopy te pide que consultes a un especialista cuanto antes."
 
     img_tag = f'<img src="data:image/png;base64,{img_b64}" alt="Snoopy"/>' if img_b64 else "🐶"
 
@@ -279,153 +313,184 @@ with col_char:
     """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
-    st.info("⚠️ Esta herramienta es **solo orientativa** y no reemplaza el diagnóstico médico profesional.", icon="🩺")
+    st.info("Esta herramienta es **solo orientativa** y no reemplaza el diagnóstico médico profesional.")
 
 
-# ══════════════════════════════════════════════════════
-# FORMULARIO
-# ══════════════════════════════════════════════════════
 with col_form:
     tab1, tab2, tab3, tab4 = st.tabs([
-        "📐 Métricas Físicas",
-        "🏥 Condiciones de Salud",
-        "🌿 Hábitos & Tests",
-        "👤 Demografía",
+        "Métricas Físicas",
+        "Condiciones de Salud",
+        "Hábitos & Tests",
+        "Demografía",
     ])
 
     # ── TAB 1 ─────────────────────────────────────────
     with tab1:
-        st.markdown('<div class="fsec"><div class="fsec-title">🏋️ Medidas Corporales</div>', unsafe_allow_html=True)
+        st.markdown('<div class="fsec"><div class="fsec-title">Medidas Corporales</div>', unsafe_allow_html=True)
         c1, c2, c3 = st.columns(3)
         with c1:
-            st.markdown('<span class="vtag">WeightInKilograms</span>', unsafe_allow_html=True)
-            weight = st.number_input("Peso (kg)", min_value=20.0, max_value=300.0, value=70.0, step=0.5)
+            st.markdown('<span class="vtag">Peso (kg)</span>', unsafe_allow_html=True)
+            weight = st.number_input("", min_value=20.0, max_value=300.0, value=70.0, step=0.5, key="weight")
         with c2:
-            st.markdown('<span class="vtag">HeightInMeters</span>', unsafe_allow_html=True)
-            height = st.number_input("Altura (m)", min_value=1.0, max_value=2.5, value=1.70, step=0.01)
+            st.markdown('<span class="vtag">Altura (m)</span>', unsafe_allow_html=True)
+            height = st.number_input("", min_value=1.0, max_value=2.5, value=1.70, step=0.01,key="height")
         with c3:
-            bmi_calc = round(weight / (height ** 2), 1)
-            st.markdown('<span class="vtag">BMI</span>', unsafe_allow_html=True)
-            bmi = st.number_input("IMC (BMI)", min_value=10.0, max_value=80.0, value=bmi_calc, step=0.1)
-        st.markdown('</div>', unsafe_allow_html=True)
+          bmi = round(weight / (height ** 2), 1)
+          st.markdown('<span class="vtag">Índice de Masa Corporal</span>', unsafe_allow_html=True)
+          st.number_input("", value=bmi, disabled=True, key="bmi")
 
-        st.markdown('<div class="fsec"><div class="fsec-title">🧠 Bienestar Diario</div>', unsafe_allow_html=True)
+        st.markdown('<div class="fsec"><div class="fsec-title">Bienestar Diario</div>', unsafe_allow_html=True)
         c1, c2, c3 = st.columns(3)
         with c1:
-            st.markdown('<span class="vtag">PhysicalHealthDays</span>', unsafe_allow_html=True)
-            physical_days = st.slider("Días con mala salud física (últimos 30)", 0, 30, 0)
+            st.markdown('<span class="vtag">Días con malestar físico (últimos 30)</span>', unsafe_allow_html=True)
+            physical_days = st.slider("", 0, 30, 0, key="phys_days")
         with c2:
-            st.markdown('<span class="vtag">MentalHealthDays</span>', unsafe_allow_html=True)
-            mental_days = st.slider("Días con mala salud mental (últimos 30)", 0, 30, 0)
+            st.markdown('<span class="vtag">Días con malestar mental (últimos 30)</span>', unsafe_allow_html=True)
+            mental_days = st.slider(" ", 0, 30, 0, key="ment_days")
         with c3:
-            st.markdown('<span class="vtag">SleepHours</span>', unsafe_allow_html=True)
-            sleep = st.slider("Horas de sueño por noche", 1, 24, 7)
+            st.markdown('<span class="vtag">Horas de sueño</span>', unsafe_allow_html=True)
+            sleep = st.slider("", 1, 24, 7, key="sleep")
         st.markdown('</div>', unsafe_allow_html=True)
 
     # ── TAB 2 ─────────────────────────────────────────
     with tab2:
-        st.markdown('<div class="fsec"><div class="fsec-title">🩺 Condiciones Crónicas</div>', unsafe_allow_html=True)
+        st.markdown('<div class="fsec"><div class="fsec-title">Condiciones Crónicas</div>', unsafe_allow_html=True)
         c1, c2, c3 = st.columns(3)
         chronic_map = {
-            "HadAngina": "Angina de pecho", "HadStroke": "Derrame cerebral",
-            "HadDiabetes": "Diabetes", "HadAsthma": "Asma",
-            "HadCOPD": "EPOC / Bronquitis crónica",
+            "HadStroke":             "Derrame cerebral",
+            "HadDiabetes":           "Diabetes",
+            "HadAsthma":             "Asma",
+            "HadCOPD":               "EPOC / Bronquitis crónica",
             "HadDepressiveDisorder": "Trastorno depresivo",
-            "HadKidneyDisease": "Enfermedad renal",
-            "HadArthritis": "Artritis", "HadSkinCancer": "Cáncer de piel",
+            "HadKidneyDisease":      "Enfermedad renal",
+            "HadArthritis":          "Artritis",
+            "HadSkinCancer":         "Cáncer de piel",
+        }
+        chronic_friendly = {
+            "HadStroke":             "Derrame cerebral",
+            "HadDiabetes":           "Diabetes",
+            "HadAsthma":             "Asma",
+            "HadCOPD":               "Enfermedad pulmonar",
+            "HadDepressiveDisorder": "Depresión",
+            "HadKidneyDisease":      "Enfermedad renal",
+            "HadArthritis":          "Artritis",
+            "HadSkinCancer":         "Cáncer de piel",
         }
         chronic_vals = {}
         cols3 = [c1, c2, c3]
         for i, (k, v) in enumerate(chronic_map.items()):
             with cols3[i % 3]:
-                st.markdown(f'<span class="vtag">{k}</span>', unsafe_allow_html=True)
+                st.markdown(f'<span class="vtag">{chronic_friendly[k]}</span>', unsafe_allow_html=True)
                 chronic_vals[k] = st.checkbox(v, key=f"chr_{k}")
         st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown('<div class="fsec"><div class="fsec-title">🦽 Dificultades Físicas</div>', unsafe_allow_html=True)
+        st.markdown('<div class="fsec"><div class="fsec-title">Dificultades Físicas</div>', unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         diff_map = {
-            "DifficultyWalking": "Dificultad para caminar",
-            "DifficultyConcentrating": "Dificultad para concentrarse",
-            "DifficultyDressingBathing": "Dificultad para vestirse / bañarse",
-            "DifficultyErrands": "Dificultad para hacer diligencias",
-            "DeafOrHardOfHearing": "Sordera o dificultad auditiva",
+            "DifficultyWalking":        "Dificultad para caminar",
+            "DifficultyConcentrating":  "Dificultad para concentrarse",
+            "DifficultyDressingBathing":"Dificultad para vestirse / bañarse",
+            "DifficultyErrands":        "Dificultad para hacer diligencias",
+            "DeafOrHardOfHearing":      "Sordera o dificultad auditiva",
+        }
+        diff_friendly = {
+            "DifficultyWalking":        "Dificultad al caminar",
+            "DifficultyConcentrating":  "Dificultad al concentrarse",
+            "DifficultyDressingBathing":"Dificultad al vestirse",
+            "DifficultyErrands":        "Dificultad para diligencias",
+            "DeafOrHardOfHearing":      "Dificultad auditiva",
         }
         diff_vals = {}
         cols2 = [c1, c2]
         for i, (k, v) in enumerate(diff_map.items()):
             with cols2[i % 2]:
-                st.markdown(f'<span class="vtag">{k}</span>', unsafe_allow_html=True)
+                st.markdown(f'<span class="vtag">{diff_friendly[k]}</span>', unsafe_allow_html=True)
                 diff_vals[k] = st.checkbox(v, key=f"dif_{k}")
         st.markdown('</div>', unsafe_allow_html=True)
 
     # ── TAB 3 ─────────────────────────────────────────
     with tab3:
-        st.markdown('<div class="fsec"><div class="fsec-title">🚬 Hábitos de Vida</div>', unsafe_allow_html=True)
+        st.markdown('<div class="fsec"><div class="fsec-title">Hábitos de Vida</div>', unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
-            st.markdown('<span class="vtag">PhysicalActivities</span>', unsafe_allow_html=True)
+            st.markdown('<span class="vtag">Actividad física</span>', unsafe_allow_html=True)
             physical_activities = st.checkbox("Realiza actividad física regularmente")
-            st.markdown('<span class="vtag">SmokerStatus</span>', unsafe_allow_html=True)
+            st.markdown('<span class="vtag">Fumador</span>', unsafe_allow_html=True)
             smoker = st.checkbox("Fumador/a")
         with c2:
-            st.markdown('<span class="vtag">ECigaretteUsage</span>', unsafe_allow_html=True)
+            st.markdown('<span class="vtag">Cigarrillo electrónico</span>', unsafe_allow_html=True)
             ecigarette = st.checkbox("Usa cigarrillos electrónicos")
-            st.markdown('<span class="vtag">AlcoholDrinkers</span>', unsafe_allow_html=True)
+            st.markdown('<span class="vtag">Consumo de alcohol</span>', unsafe_allow_html=True)
             alcohol = st.checkbox("Consume alcohol")
         st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown('<div class="fsec"><div class="fsec-title">💉 Pruebas & Vacunación</div>', unsafe_allow_html=True)
+        st.markdown('<div class="fsec"><div class="fsec-title">Pruebas y Vacunación</div>', unsafe_allow_html=True)
         c1, c2, c3 = st.columns(3)
         test_map = {
-            "ChestScan": "Escaneo de tórax (CT)",
-            "HIVTesting": "Prueba de VIH",
-            "FluVaxLast12": "Vacuna gripe (últ. 12 meses)",
-            "PneumoVaxEver": "Vacuna neumococo",
-            "TetanusLast10Tdap": "Vacuna tétanos (últ. 10 años)",
-            "CovidPos": "Positivo para COVID-19",
-            "HighRiskLastYear": "Alto riesgo el año pasado",
-            "RemovedTeeth": "Dientes extraídos",
+            "ChestScan":           "Escaneo de tórax (CT)",
+            "HIVTesting":          "Prueba de VIH",
+            "FluVaxLast12":        "Vacuna gripe (últ. 12 meses)",
+            "PneumoVaxEver":       "Vacuna neumococo",
+            "TetanusLast10Tdap":   "Vacuna tétanos (últ. 10 años)",
+            "CovidPos":            "Positivo para COVID-19",
+            "HighRiskLastYear":    "Alto riesgo el año pasado",
+            "RemovedTeeth":        "Dientes extraídos",
+        }
+        test_friendly = {
+            "ChestScan":           "Escaneo de tórax",
+            "HIVTesting":          "Prueba de VIH",
+            "FluVaxLast12":        "Vacuna gripe",
+            "PneumoVaxEver":       "Vacuna neumococo",
+            "TetanusLast10Tdap":   "Vacuna tétanos",
+            "CovidPos":            "COVID-19 positivo",
+            "HighRiskLastYear":    "Alto riesgo reciente",
+            "RemovedTeeth":        "Extracción dental",
         }
         test_vals = {}
         cols3b = [c1, c2, c3]
         for i, (k, v) in enumerate(test_map.items()):
             with cols3b[i % 3]:
-                st.markdown(f'<span class="vtag">{k}</span>', unsafe_allow_html=True)
+                st.markdown(f'<span class="vtag">{test_friendly[k]}</span>', unsafe_allow_html=True)
                 test_vals[k] = st.checkbox(v, key=f"tst_{k}")
         st.markdown('</div>', unsafe_allow_html=True)
 
     # ── TAB 4 ─────────────────────────────────────────
     with tab4:
-        st.markdown('<div class="fsec"><div class="fsec-title">👤 Información Personal</div>', unsafe_allow_html=True)
+        st.markdown('<div class="fsec"><div class="fsec-title">Información Personal</div>', unsafe_allow_html=True)
         c1, c2 = st.columns(2)
         with c1:
-            st.markdown('<span class="vtag">Sex</span>', unsafe_allow_html=True)
-            sex = st.radio("Sexo biológico", ["Male", "Female"], horizontal=True)
-            st.markdown('<span class="vtag">AgeCategory</span>', unsafe_allow_html=True)
-            age_category = st.selectbox("Grupo etario", [
+            st.markdown('<span class="vtag">Último chequeo médico</span>', unsafe_allow_html=True)
+            last_checkup = st.selectbox("", [
+                "En el último año",
+                "En los últimos 2 años",
+                "En los últimos 5 años",
+                "Hace más de 5 años",
+            ], key="last_checkup")
+            st.markdown('<span class="vtag">Grupo de edad</span>', unsafe_allow_html=True)
+            age_category = st.selectbox("", [
                 "18-24","25-29","30-34","35-39","40-44","45-49",
                 "50-54","55-59","60-64","65-69","70-74","75-79","80+"
-            ])
-            st.markdown('<span class="vtag">GeneralHealth</span>', unsafe_allow_html=True)
-            general_health = st.select_slider("Salud general",
-                options=["Poor","Fair","Good","Very Good","Excellent"], value="Good")
+            ], key="age_cat")
+            st.markdown('<span class="vtag">Salud general</span>', unsafe_allow_html=True)
+            general_health = st.select_slider("",
+                options=["Muy mala", "Mala", "Regular", "Buena", "Excelente"],
+                value="Regular", key="gen_health")
         with c2:
-            st.markdown('<span class="vtag">RaceEthnicityCategory</span>', unsafe_allow_html=True)
-            race = st.selectbox("Raza / Etnia", [
-                "White only, Non-Hispanic","Black only, Non-Hispanic","Hispanic",
-                "Multiracial, Non-Hispanic","Other race only, Non-Hispanic",
-            ])
-            st.markdown('<span class="vtag">LastCheckupTime</span>', unsafe_allow_html=True)
-            last_checkup = st.selectbox("Último chequeo médico", [
-                "Within past year","Within past 2 years",
-                "Within past 5 years","5 or more years ago",
-            ])
+            st.markdown('<span class="vtag">Raza / Etnia</span>', unsafe_allow_html=True)
+            race = st.selectbox("", [
+                "Blanco, no hispano",
+                "Negro, no hispano",
+                "Hispano",
+                "Multirracial, no hispano",
+                "Otra raza, no hispano",
+            ], key="race")
+            st.markdown('<span class="vtag">Sexo biológico</span>', unsafe_allow_html=True)
+            sex = st.radio("", ["Masculino", "Femenino"], horizontal=True, key="sex")
         st.markdown('</div>', unsafe_allow_html=True)
 
-        st.markdown('<div class="fsec"><div class="fsec-title">🗺️ Estado / Territorio</div>', unsafe_allow_html=True)
-        st.markdown('<span class="vtag">State</span>', unsafe_allow_html=True)
-        state = st.selectbox("Estado / Territorio", [
+        st.markdown('<div class="fsec"><div class="fsec-title">Estado / Territorio</div>', unsafe_allow_html=True)
+        st.markdown('<span class="vtag">Estado</span>', unsafe_allow_html=True)
+        state = st.selectbox("", [
             "Alabama","Alaska","Arizona","Arkansas","California","Colorado",
             "Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho",
             "Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana",
@@ -437,7 +502,7 @@ with col_form:
             "Tennessee","Texas","Utah","Vermont","Virginia","Washington",
             "West Virginia","Wisconsin","Wyoming","District of Columbia",
             "Guam","Puerto Rico","Virgin Islands",
-        ])
+        ], key="state")
         st.markdown('</div>', unsafe_allow_html=True)
 
 
@@ -445,28 +510,10 @@ with col_form:
 st.markdown("<br>", unsafe_allow_html=True)
 b1, b2, b3 = st.columns([1, 2, 1])
 with b2:
-    if st.button("🐾  ¡Predecir mi Riesgo Cardíaco!  🐾"):
-
-        # ── LLAMADA AL BACKEND (descomentar cuando esté listo) ──────────────
-        # import requests
-        # payload = {
-        #     "PhysicalHealthDays": physical_days, "MentalHealthDays": mental_days,
-        #     "SleepHours": sleep, "BMI": bmi,
-        #     "WeightInKilograms": weight, "HeightInMeters": height,
-        #     "Sex": sex, "AgeCategory": age_category, "GeneralHealth": general_health,
-        #     "State": state, "RaceEthnicityCategory": race, "LastCheckupTime": last_checkup,
-        #     "PhysicalActivities": physical_activities, "SmokerStatus": smoker,
-        #     "ECigaretteUsage": ecigarette, "AlcoholDrinkers": alcohol,
-        #     **chronic_vals, **diff_vals, **test_vals,
-        # }
-        # resp = requests.post("http://localhost:8000/predict", json=payload)
-        # probability = resp.json()["probability"]
-        # ────────────────────────────────────────────────────────────────────
-
-        with st.spinner("Snoopy está analizando tus datos... 🐾"):
+    if st.button("¡Predecir mi Riesgo Cardíaco!"):
+        with st.spinner("Snoopy está analizando tus datos..."):
             time.sleep(1.4)
 
-        # Mock con lógica de riesgo básica
         risk = 0
         if smoker: risk += 2
         if chronic_vals.get("HadAngina"): risk += 3
@@ -490,7 +537,7 @@ with b2:
 # ─── Footer ────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="snp-footer">
-  🐾 Snoopy CardioCheck · Proyecto académico de Machine Learning ·
-  Los resultados son simulados y <b>no constituyen diagnóstico médico</b>. 🐾
+  Snoopy CardioCheck · Proyecto académico de Machine Learning ·
+  Los resultados son simulados y <b>no constituyen diagnóstico médico</b>.
 </div>
 """, unsafe_allow_html=True)
