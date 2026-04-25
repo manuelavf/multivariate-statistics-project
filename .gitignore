@@ -14,3 +14,7 @@ Thumbs.db
 
 # VS Code
 .vscode/
+
+# Datasets y archivos de datos
+data/
+*.csv

@@ -532,7 +532,6 @@ with col_form:
         ], key="state", label_visibility="collapsed")
         st.markdown('</div>', unsafe_allow_html=True)
 
-
 # ─── Botón ─────────────────────────────────────────────────────────────────────
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("""

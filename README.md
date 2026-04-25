@@ -98,7 +98,7 @@ pip install -r requirements.txt
 Para visualizar la aplicación interactiva:
 
 ```bash
-streamlit run frontend/streamlit_app.py
+streamlit run frontend/app.py
 ```
 
 ---
