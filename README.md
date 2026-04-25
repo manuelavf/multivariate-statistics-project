@@ -11,17 +11,13 @@ El proyecto sigue una arquitectura modular que separa claramente las etapas de e
 ```
 heart-disease-project/
 │
-├── data/                      # Datos (raw y procesados)
-│
 ├── notebooks/                 # Análisis exploratorio y experimentos
 │
 ├── src/                       # Lógica reutilizable
 │   ├── preprocessing.py
-│   ├── features.py
-│   ├── train.py
-│   ├── evaluate.py
+│   ├── features.jpynb
 │
-├── models/                    # Modelos entrenados
+├── models/                    # Mejor Modelo
 │
 ├── backend/                   # API (FastAPI)
 │   ├── main.py
@@ -89,6 +85,15 @@ Una vez activado el entorno, instala las librerías necesarias:
 
 ```bash
 pip install -r requirements.txt
+```
+
+---
+
+# Ejecución del Backend (FastAPI)
+Para correr la API que sirve el modelo:
+
+```bash
+uvicorn backend.main:app --reload --port 8000
 ```
 
 ---
