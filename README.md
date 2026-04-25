@@ -122,7 +122,7 @@ http://localhost:8501
 
 1. El usuario ingresa sus datos en la interfaz
 2. El frontend procesa la información
-3. (Opcional) Se envía al backend para predicción
+3. Se envía al backend para predicción
 4. Se muestra el riesgo estimado de enfermedad cardíaca
 
 ---

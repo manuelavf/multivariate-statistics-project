@@ -1,17 +1,16 @@
 import pickle
 import sys
 from pathlib import Path
-
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from src.preprocessing import preprocess
+from backend.schemas import PatientFeatures, PredictionResponse
 
 # ── Importar src/ ─────────────────────────────────────────────────────────────
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src.preprocessing import preprocess
-from backend.schemas import PatientFeatures, PredictionResponse
 
 # ── Cargar paquete del modelo ─────────────────────────────────────────────────
 MODEL_PATH = ROOT / "model" / "best_model.pkl"
